@@ -1,0 +1,355 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link rel="stylesheet" href="css/reveal.css">
+    <link rel="stylesheet" href="css/theme/league_lukas.css" id="theme">
+
+    <title>Hands on with FEniCS - Petr Lukáš</title>
+  </head>
+
+  <body>
+    <div class="reveal">
+      <div class="slides">
+
+        <section>
+          <h1>Hands on with FEniCS</h1>
+          <p>Petr Lukáš</p>
+          <p class="notImportant">Symposium on the Application of Finite Elements in Physics and Engineering, 13<sup>th</sup> October, 2016</p>
+        </section>
+
+        <section>
+          <img src="https://api.qrserver.com/v1/create-qr-code/?data=http://fenics.lidem.net&amp;size=600x600&amp;ecc=L&amp;margin=10px"
+            title="URL address of the talk in qr code" style="margin-bottom:-10px;" />
+          <a href="http://fenics.lidem.net/" style="display:block;" title="url of this presentation">fenics.lidem.net</a>
+        </section>
+
+        <section>
+          <img src="images/funwithfenicsLogo_inverse.png" title="Have fun with FEniCS!"
+            style="border:0px solid;background:none;box-shadow:none" />
+        </section>
+
+        <section style="font-size:71%;">
+          <h2>FEniCS installation in general</h2>
+          <div class="leftColumn">
+            <h3>Ubuntu packages</h3>
+            <pre style="font-size: 55%;">
+sudo add-apt-repository ppa:fenics-packages/fenics
+sudo apt-get update
+sudo apt-get install fenics
+sudo apt-get dist-upgrade</pre>
+          </div>
+          <div class="rightColumn">
+            <h3>Docker</h3>
+            <ol>
+              <li>Install Docker for your platform</li>
+              <li>
+                <p>Install the FEniCS Docker script</p>
+                <pre style="font-size: 55%;">
+curl -s https://get.fenicsproject.org | bash
+fenicsproject run</pre>
+              </li>
+              <li>
+                <a title="go to FEniCS docker docs" href="http://fenics.readthedocs.io/projects/containers/en/latest/introduction.html">
+                  FEniCS readthedocs Docker docs
+                </a>
+              </li>
+            </ol>
+          </div>
+        </section>
+
+        <section style="font-size:71%;">
+          <h2>FEniCS with Docker installation <strong>from USB</strong></h2>
+          <p>To install FEniCS on your laptop, follow these instructions:</p>
+          <ol>
+            <li>
+              <strong>Install Docker. </strong>Windows users, click the Docker Toolbox exe file, Mac users, click the pkg file, and Linux users, run the command <code>curl -fsSL <span class="hljs-symbol">https:</span>/<span class="hljs-regexp">/get.docker.com/</span> | sh</code>. In Windows you need to enable virtualization in BIOS.
+            </li>
+            <li>
+              <strong>Start Docker. </strong>Windows and Mac users, just start the Docker Toolbox and you should get a Unix terminal window. Linux users should be good to go and can skip this step.
+            </li>
+            <li>
+              <strong>Install the FEniCS Docker image. </strong>Identify the path to the USB stick and load the FEniCS image into Docker by running something like <code>docker load -i /Volumes/USB\ DISK/fenics.tar</code>. This might take some time since the FEniCS image needs to be copied from the USB stick.
+            </li>
+            <li>
+              <strong>Install the FEniCS Docker script. </strong>Identify the path to the USB stick and copy the FEniCS Docker script onto your system by running something like <code>sudo cp /Volumes/USB\ DISK/fenicsproject /usr/local/bin</code>. If running on Windows, <code>cd</code> into some directory not containing spaces in the name before running the fenicsproject command (so stay <strong>out</strong> of My Documents).
+            </li>
+          </ol>
+        </section>
+
+        <section id="ipython" style="font-size:90%;">
+          <h2>Docker, IPython and Jupiter</h2>
+          <p>Shareable documents, Interactive notebooks, Server may be online</p>
+            <pre style="font-size: 55%;">
+docker run --name notebook -w /home/fenics -v $(pwd):/home/fenics/shared
+     -d -p 127.0.0.1:8888 quay.io/dolfinadjoint/dev-dolfin-adjoint
+     'jupyter-notebook --ip=0.0.0.0'</pre>
+          <p></p>
+          <ul>
+            <li>reattach to a terminal: &nbsp;&nbsp;&nbsp; <code style="font-size: 90%;">docker attach <i>name</i></code></li>
+            <li>stop image: &nbsp;&nbsp;&nbsp; <code style="font-size: 90%;">docker stop <i>name</i></code></li>
+            <li>save image: &nbsp;&nbsp;&nbsp; <code style="font-size: 90%;">docker save -o <i>file</i> <i>name</i></code></li>
+            <li>load image: &nbsp;&nbsp;&nbsp; <code style="font-size: 90%;">docker load -i <i>file</i></code></li>
+          </ul>
+          <p>
+            <a href="https://docs.docker.com/engine/reference/run/">docs.docker.com/engine/reference/run/</a>
+          </p>
+          <p>
+            Check FEniCS version by:
+            <pre style="font-size: 55%;">
+import dolfin
+print dolfin.dolfin_version()</pre>
+          </p>
+
+
+        </section>
+
+
+
+
+
+
+        <section id="example1" style="font-size:90%;">
+          <h3>Example 1</h3>
+          <div class="leftColumn" style="text-align:left;">
+            <p>We consider the Neumann BVP</p>
+            \[
+              - \Delta u + u = f \; \mathsf{in} \; \Omega,
+            \]
+            \[
+              \frac{\partial u}{\partial n} = 0 \; \mathsf{on} \; \partial \Omega
+            \]
+            <p>in $\mathbb{R}^2$. This leads to</p>
+            \[
+              b(u,v) = F(v) \; \forall \; v \in V
+            \]
+          </div>
+          <div class="rightColumn" style="text-align:left;">
+            <p>where</p>
+            \[
+              \begin{align}
+                b(u,v) &= \int_\Omega ( \nabla u \cdot \nabla v + uv ) \; dx \\
+                F(v) &= \int_\Omega fv \; dx \\
+              \end{align}
+            \]
+          </div>
+        </section>
+
+        <section id="example1-2" style="font-size:90%;">
+          <p>We start with the solution $u$ we want</p>
+          \[
+            u(x,y) = [(x^2 - 2x) \sin(2\pi y)]^2
+          \]
+          <p>Since $f = -\Delta u + u$ we obtain</p>
+          \[
+            \begin{align}
+              f(x,y) = &-8[\pi(x^2-2x)]^2 \cos 4\pi y \\
+              &+ (x^4 - 4x^3 - 8x^2 + 24x - 8)\sin^2 2\pi y \\
+            \end{align}
+          \]
+          <p><strong>Cheat sheet</strong></p>
+            <pre style="font-size: 55%;">
+f = Expression('-8 * pow(pi*(pow(x[0], 2) - 2*x[0]), 2) * cos(4*pi*x[1]) \
+                + (pow(x[0], 4) - 4*pow(x[0], 3) - 8*pow(x[0], 2) + 24*x[0] - 8) \
+                * pow(sin(2*pi*x[1]), 2)')</pre>
+        </section>
+
+
+
+
+
+
+        <section id="magics" style="font-size:90%;">
+          <h2>IPython Magics</h2>
+          <div class="leftColumn">
+          <ul>
+            <li>%pwd</li>
+            <li>%ls</li>
+            <li>%run</li>
+            <li>%load</li>
+            <li>%who_ls</li>
+          </ul>
+          </div>
+          <div class="rightColumn">
+          <ul>
+            <li>%matplotlib <i>[notebook, gtk, ...]</i></li>
+            <li>%tb</li>
+            <li>%set_env</li>
+            <li>%quickref</li>
+            <li>%%latex</li>
+          </ul>
+          </div>
+          <p>
+            <a href="http://ipython.readthedocs.io/en/stable/interactive/magics.html">ipython.readthedocs.io/en/stable/interactive/magics.html</a>
+          </p>
+        </section>
+
+
+
+
+        <section id="mshr" style="font-size:90%;" data-transition="fade">
+          <h2>Mshr</h2>
+          
+          <ul>
+            <li>2D: Rectangle, Polygon, Circle, Ellipse</li>
+            <li>3D: Box, Tetrahedron, Sphere, Ellipsoid, Cylinder, Cone</li>
+            <li>3D Surface (triangles)</li>
+            <li>Operators: Union, Intersection, Difference, Scaling, Rotation, Translation</li>
+            <li>Other classes</li>
+          </ul>
+          <p>
+            <a href="https://bitbucket.org/fenics-project/mshr/wiki/API">bitbucket.org/fenics-project/mshr/wiki/API</a>
+          </p>
+          <p>
+            Let us make a our own mesh! <a href="http://stemtosteam.org/">stemtosteam.org</a>
+          </p>
+        </section>
+
+
+        <section id="example2" style="font-size:90%;" data-transition="fade">
+          <h2>Example 2: Stokes equation</h2>
+          <p>Find velocity $u$ and the pressure $p$ such that</p>
+             \[
+              \begin{align}
+                - \nabla \cdot (\nu \epsilon(u) - p\mathbb{I}) &= f &\mathsf{in} \; \Omega \\
+                \nabla \cdot u &= 0 &\mathsf{in} \; \Omega \\
+              \end{align}
+            \]
+          <p>where $\epsilon = \nabla u + \nabla u^T$ and with boundary conditions</p>
+            \[
+              \begin{align}
+                u &= 0 &\mathsf{on} \; \partial\Omega_D \\
+                -(\nu\epsilon - p\mathbb{I}) &= p_0 n &\mathsf{on} \; \partial\Omega_N \\
+              \end{align}
+            \]
+          <p>We suppose that $\nu = \nu(u)$ so we have nonlinear system of PDEs</p>
+        </section> 
+
+        <section id="example2-2" style="font-size:90%;" data-transition="fade">
+          <h3>Variational formulation</h3>
+          <p>Let $u\in V$ and $p \in Q$, then $w = (u,p) \in V \times Q$, let $f=0$.</p>
+          <p>First multiply by test functions $(v,q) \in W$ and integrate by parts</p>
+             \[
+              \int_\Omega \nu\epsilon(u) \cdot \nabla v \, \mathrm{d}x
+              - \int_\Omega p \nabla\cdot v \, \mathrm{d}x
+              - \int_{\partial\Omega} (\nu\epsilon(u)-p\mathbb{I})\cdot n \cdot v \, \mathrm{d}s
+              = 0
+            \]
+             \[
+              \int_\Omega \nabla\cdot u \, q \, \mathrm{d}x = 0
+            \]
+          <p>Now we add these two equations, take BCs, and use $W = V \times Q$. </p>
+            \[
+              \int_\Omega \nu\epsilon(u) \cdot \nabla v \, \mathrm{d}x
+              - \int_\Omega p \nabla\cdot v \, \mathrm{d}x
+              - \int_\Omega \nabla\cdot u \, q \, \mathrm{d}x
+              + \int_{\partial\Omega} p_0 v \cdot n \, \mathrm{d}s
+              = 0
+            \]
+        </section>
+
+        <section id="example2-3" style="font-size:90%;" data-transition="fade">
+          <h3>Canonical form of a problem in FEniCS</h3>
+          <p>Find $w\in W$ such that</p>
+            \[
+              F(w;y) = 0  \; \forall y \in \hat{W}
+            \]
+          <p>In our case this means</p>
+            \[
+              \begin{align}
+                F(w;y) =
+                &\int_\Omega \nu\epsilon(u) \cdot \nabla v \, \mathrm{d}x
+                - \int_\Omega p \nabla\cdot v \, \mathrm{d}x \\
+                &- \int_\Omega \nabla\cdot u \, q \, \mathrm{d}x
+                + \int_{\partial\Omega} p_0 v \cdot n \, \mathrm{d}s \\
+              \end{align}
+            \]
+        </section>
+
+
+        <section id="example3" style="font-size:90%;">
+          <h3>Example 3: Dolfin Adjoint</h3>
+          <div class="leftColumn" style="text-align:left;">
+            <p>We consider the problem</p>
+            \[
+              \min_{f} \int_\Omega (u-1)^2 \mathrm{d}x + \int_\Omega f^2 \mathrm{d}x
+            \]
+            <p>subject to</p>
+            \[
+              \begin{align}
+                - \Delta u + u &= f \\
+                \frac{\partial u}{\partial n} &= 0 \\
+              \end{align}
+            \]
+          </div>
+          <div class="rightColumn fragment" style="text-align:left;">
+            <p style="font-weight:bold;">Cheat sheet</p>
+            <ol style="font-size:89.5%;">
+              <li>open Example 1</li>
+              <li>import <code>dolfin_adjoint</code> module</li>
+              <li>define the functional using <code>Functional</code></li>
+              <li>define the control using <code>Control</code></li>
+              <li>define the <code>ReducedFunctional</code></li>
+              <li>call <code>minimize</code></li>
+            </ol>
+          
+          </div>
+        </section>
+
+
+
+
+
+
+
+
+
+        <section id="end">
+          <h2>Thank you for your attention!</h2>
+          <p class="emRow">
+            Petr Lukáš
+            <br />
+            <code>
+              <a href="mailto:lukas@karlin.mff.cuni.cz" title="write email">lukas@karlin.mff.cuni.cz</a>
+            </code>
+          </p>
+          <p>
+            <a href="https://github.com/lukaspetr/FEniCSopt" style="opacity:0.8;">FEniCSopt on Github</a>
+          </p>
+          <p>
+            <a href="https://github.com/hakimel/reveal.js" class="notImportant">Reveal.js on Github</a>
+          </p>
+        </section>
+
+      </div>
+
+    </div>
+
+    <script src="lib/js/head.min.js"></script>
+    <script src="js/reveal.js"></script>
+    <script>
+      Reveal.initialize({
+        zoomKey: 'shift',
+        history: true,
+        transition: 'linear',
+        math: {
+          // mathjax: 'http://cdn.mathjax.org/mathjax/latest/MathJax.js',
+          config: 'TeX-AMS_HTML-full'
+        },
+
+        dependencies: [
+          // Basic definitions
+          { src: 'lib/js/classList.js' },
+          { src: 'plugin/math/math.js', async: true },
+          // Syntax highlight for <code> elements
+          { src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+          // Zoom in and out with Alt+click
+          { src: 'plugin/zoom-js/zoom.js', async: true },
+          // Speaker notes
+          { src: 'plugin/notes/notes.js', async: true },
+        ]
+      });
+    </script>
+  </body>
+</html>
