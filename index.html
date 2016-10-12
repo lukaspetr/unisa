@@ -101,14 +101,7 @@ docker run --name notebook -w /home/fenics -v $(pwd):/home/fenics/shared
 import dolfin
 print dolfin.dolfin_version()</pre>
           </p>
-
-
         </section>
-
-
-
-
-
 
         <section id="example1" style="font-size:90%;">
           <h3>Example 1</h3>
@@ -151,14 +144,12 @@ print dolfin.dolfin_version()</pre>
           <p><strong>Cheat sheet</strong></p>
             <pre style="font-size: 55%;">
 f = Expression('-8 * pow(pi*(pow(x[0], 2) - 2*x[0]), 2) * cos(4*pi*x[1]) \
-                + (pow(x[0], 4) - 4*pow(x[0], 3) - 8*pow(x[0], 2) + 24*x[0] - 8) \
-                * pow(sin(2*pi*x[1]), 2)')</pre>
+        + (pow(x[0], 4) - 4*pow(x[0], 3) - 8*pow(x[0], 2) + 24*x[0] - 8) \
+        * pow(sin(2*pi*x[1]), 2)')</pre>
+          <p><a href="ntbk/ex1.ipynb" target="_blank" download>IPython notebook for Example 1</a></p>
         </section>
 
-
-
-
-
+        <!-- They will open the Example 1 now, I will let them to see it -->
 
         <section id="magics" style="font-size:90%;">
           <h2>IPython Magics</h2>
@@ -185,28 +176,6 @@ f = Expression('-8 * pow(pi*(pow(x[0], 2) - 2*x[0]), 2) * cos(4*pi*x[1]) \
           </p>
         </section>
 
-
-
-
-        <section id="mshr" style="font-size:90%;" data-transition="fade">
-          <h2>Mshr</h2>
-          
-          <ul>
-            <li>2D: Rectangle, Polygon, Circle, Ellipse</li>
-            <li>3D: Box, Tetrahedron, Sphere, Ellipsoid, Cylinder, Cone</li>
-            <li>3D Surface (triangles)</li>
-            <li>Operators: Union, Intersection, Difference, Scaling, Rotation, Translation</li>
-            <li>Other classes</li>
-          </ul>
-          <p>
-            <a href="https://bitbucket.org/fenics-project/mshr/wiki/API">bitbucket.org/fenics-project/mshr/wiki/API</a>
-          </p>
-          <p>
-            Let us make a our own mesh! <a href="http://stemtosteam.org/">stemtosteam.org</a>
-          </p>
-        </section>
-
-
         <section id="example2" style="font-size:90%;" data-transition="fade">
           <h2>Example 2: Stokes equation</h2>
           <p>Find velocity $u$ and the pressure $p$ such that</p>
@@ -228,7 +197,7 @@ f = Expression('-8 * pow(pi*(pow(x[0], 2) - 2*x[0]), 2) * cos(4*pi*x[1]) \
 
         <section id="example2-2" style="font-size:90%;" data-transition="fade">
           <h3>Variational formulation</h3>
-          <p>Let $u\in V$ and $p \in Q$, then $w = (u,p) \in V \times Q$, let $f=0$.</p>
+          <p>Let $u\in V$, $p \in Q$, $w := (u,p) \in V \times Q$, let $f=0$, $p_0 = 1-x$</p>
           <p>First multiply by test functions $(v,q) \in W$ and integrate by parts</p>
              \[
               \int_\Omega \nu\epsilon(u) \cdot \nabla v \, \mathrm{d}x
@@ -251,10 +220,11 @@ f = Expression('-8 * pow(pi*(pow(x[0], 2) - 2*x[0]), 2) * cos(4*pi*x[1]) \
 
         <section id="example2-3" style="font-size:90%;" data-transition="fade">
           <h3>Canonical form of a problem in FEniCS</h3>
-          <p>Find $w\in W$ such that</p>
+          <p class="emBlock">
             \[
               F(w;y) = 0  \; \forall y \in \hat{W}
             \]
+          </p>
           <p>In our case this means</p>
             \[
               \begin{align}
@@ -265,8 +235,28 @@ f = Expression('-8 * pow(pi*(pow(x[0], 2) - 2*x[0]), 2) * cos(4*pi*x[1]) \
                 + \int_{\partial\Omega} p_0 v \cdot n \, \mathrm{d}s \\
               \end{align}
             \]
+          <p><a href="ntbk/ex2-Stokes.ipynb" target="_blank" download>IPython notebook for Example 2</a></p>
         </section>
 
+        <section id="mshr" style="font-size:90%;" data-transition="fade">
+          <h2>Mshr</h2>
+          <ul>
+            <li>2D: Rectangle, Polygon, Circle, Ellipse</li>
+            <li>3D: Box, Tetrahedron, Sphere, Ellipsoid, Cylinder, Cone</li>
+            <li>3D Surface (triangles)</li>
+            <li>Operators: Union, Intersection, Difference, Scaling, Rotation, Translation</li>
+            <li>Other classes</li>
+          </ul>
+          <p>
+            <a href="https://bitbucket.org/fenics-project/mshr/wiki/API">bitbucket.org/fenics-project/mshr/wiki/API</a>
+          </p>
+          <p>
+            Let us make your own mesh! <a href="http://stemtosteam.org/">stemtosteam.org</a>
+          </p>
+          <p><a href="ntbk/ex3-Mshr.ipynb" target="_blank" download>IPython notebook for Mshr</a></p>
+        </section>
+
+        <!-- # %load ~/demo/documented/poisson/python/demo_poisson.py or other possibilities -->
 
         <section id="example3" style="font-size:90%;">
           <h3>Example 3: Dolfin Adjoint</h3>
@@ -293,37 +283,24 @@ f = Expression('-8 * pow(pi*(pow(x[0], 2) - 2*x[0]), 2) * cos(4*pi*x[1]) \
               <li>define the <code>ReducedFunctional</code></li>
               <li>call <code>minimize</code></li>
             </ol>
-          
           </div>
         </section>
-
-
-
-
-
-
-
-
 
         <section id="end">
           <h2>Thank you for your attention!</h2>
           <p class="emRow">
-            Petr Lukáš
-            <br />
             <code>
               <a href="mailto:lukas@karlin.mff.cuni.cz" title="write email">lukas@karlin.mff.cuni.cz</a>
             </code>
           </p>
           <p>
-            <a href="https://github.com/lukaspetr/FEniCSopt" style="opacity:0.8;">FEniCSopt on Github</a>
+            <a href="https://github.com/lukaspetr/unisa" style="opacity:0.8;">FEniCS hands-on on Github</a>
           </p>
           <p>
             <a href="https://github.com/hakimel/reveal.js" class="notImportant">Reveal.js on Github</a>
           </p>
         </section>
-
       </div>
-
     </div>
 
     <script src="lib/js/head.min.js"></script>
