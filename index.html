@@ -141,12 +141,12 @@ print dolfin.dolfin_version()</pre>
               &+ (x^4 - 4x^3 - 8x^2 + 24x - 8)\sin^2 2\pi y \\
             \end{align}
           \]
-          <p><strong>Cheat sheet</strong></p>
+          <p><strong>Small time-saver</strong></p>
             <pre style="font-size: 55%;">
 f = Expression('-8 * pow(pi*(pow(x[0], 2) - 2*x[0]), 2) * cos(4*pi*x[1]) \
         + (pow(x[0], 4) - 4*pow(x[0], 3) - 8*pow(x[0], 2) + 24*x[0] - 8) \
         * pow(sin(2*pi*x[1]), 2)')</pre>
-          <p><a href="ntbk/ex1.ipynb" target="_blank" download>IPython notebook for Example 1</a></p>
+          <p><strong>Big time-saver</strong>$\rightarrow$<a href="ntbk/ex1.ipynb" target="_blank" download>IPython notebook for Example 1</a></p>
         </section>
 
         <!-- They will open the Example 1 now, I will let them to see it -->
@@ -171,7 +171,7 @@ f = Expression('-8 * pow(pi*(pow(x[0], 2) - 2*x[0]), 2) * cos(4*pi*x[1]) \
             <li>%%latex</li>
           </ul>
           </div>
-          <p>
+          <p style="line-height:250%;">
             <a href="http://ipython.readthedocs.io/en/stable/interactive/magics.html">ipython.readthedocs.io/en/stable/interactive/magics.html</a>
           </p>
         </section>
@@ -197,7 +197,7 @@ f = Expression('-8 * pow(pi*(pow(x[0], 2) - 2*x[0]), 2) * cos(4*pi*x[1]) \
 
         <section id="example2-2" style="font-size:90%;" data-transition="fade">
           <h3>Variational formulation</h3>
-          <p>Let $u\in V$, $p \in Q$, $w := (u,p) \in V \times Q$, let $f=0$, $p_0 = 1-x$</p>
+          <p>Let $w = (u,p) \in W = V \times Q$, $f = 0$, $p_0 = 1-x$, $\nu = \frac{1-y^2}{5}$</p>
           <p>First multiply by test functions $(v,q) \in W$ and integrate by parts</p>
              \[
               \int_\Omega \nu\epsilon(u) \cdot \nabla v \, \mathrm{d}x
@@ -290,11 +290,12 @@ f = Expression('-8 * pow(pi*(pow(x[0], 2) - 2*x[0]), 2) * cos(4*pi*x[1]) \
           <h2>Thank you for your attention!</h2>
           <p class="emRow">
             <code>
-              <a href="mailto:lukas@karlin.mff.cuni.cz" title="write email">lukas@karlin.mff.cuni.cz</a>
+              <a href="mailto:lukas@karlin.mff.cuni.cz" title="write email">lukas@karlin.mff.cuni.cz</a><br \>
+              <a href="mailto:simon@simula.no"          title="write email">simon@simula.no</a>
             </code>
           </p>
           <p>
-            <a href="https://github.com/lukaspetr/unisa" style="opacity:0.8;">FEniCS hands-on on Github</a>
+            <a href="https://github.com/lukaspetr/unisa" style="opacity:0.78;">FEniCS hands-on on Github</a>
           </p>
           <p>
             <a href="https://github.com/hakimel/reveal.js" class="notImportant">Reveal.js on Github</a>
