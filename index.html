@@ -31,32 +31,21 @@
         </section>
 
         <section style="font-size:71%;">
-          <h2>FEniCS installation in general</h2>
-          <div class="leftColumn">
-            <h3>Ubuntu packages</h3>
-            <pre style="font-size: 55%;">
-sudo add-apt-repository ppa:fenics-packages/fenics
-sudo apt-get update
-sudo apt-get install fenics
-sudo apt-get dist-upgrade</pre>
-          </div>
-          <div class="rightColumn">
-            <h3>Docker</h3>
-            <ol>
-              <li>Install Docker for your platform</li>
-              <li>
-                <p>Install the FEniCS Docker script</p>
-                <pre style="font-size: 55%;">
+          <h2>FEniCS with dolfin-adjoint online installation</h2>
+          <ol>
+            <li>Install Docker for your platform</li>
+            <li>
+              <p>Install the FEniCS Docker script</p>
+              <pre style="font-size: 75%; width:90%; overflow:visible;">
 curl -s https://get.fenicsproject.org | bash
 fenicsproject run</pre>
-              </li>
-              <li>
-                <a title="go to FEniCS docker docs" href="http://fenics.readthedocs.io/projects/containers/en/latest/introduction.html">
-                  FEniCS readthedocs Docker docs
-                </a>
-              </li>
-            </ol>
-          </div>
+            </li>
+            <li>
+              <a title="go to FEniCS docker docs" href="http://fenics.readthedocs.io/projects/containers/en/latest/introduction.html">
+                FEniCS readthedocs Docker docs
+              </a>
+            </li>
+          </ol>
         </section>
 
         <section style="font-size:71%;">
@@ -64,43 +53,57 @@ fenicsproject run</pre>
           <p>To install FEniCS on your laptop, follow these instructions:</p>
           <ol>
             <li>
-              <strong>Install Docker. </strong>Windows users, click the Docker Toolbox exe file, Mac users, click the pkg file, and Linux users, run the command <code>curl -fsSL <span class="hljs-symbol">https:</span>/<span class="hljs-regexp">/get.docker.com/</span> | sh</code>. In Windows you need to enable virtualization in BIOS.
+              <strong>Install Docker. </strong>Please follow README.TXT instructions, Windows users click the Docker Toolbox exe file, Mac users click the pkg file, and Linux users run the command <code>curl -fsSL https://get.docker.com/ | sh</code>. In Windows you need to enable virtualization in BIOS.
             </li>
             <li>
-              <strong>Start Docker. </strong>Windows and Mac users, just start the Docker Toolbox and you should get a Unix terminal window. Linux users should be good to go and can skip this step.
+              <strong>Start Docker. </strong>Windows and Mac users start the Docker Quickstart Terminal (shortcut may be on the desktop). Linux users are good to go and can skip this step.
             </li>
             <li>
-              <strong>Install the FEniCS Docker image. </strong>Identify the path to the USB stick and load the FEniCS image into Docker by running something like <code>docker load -i /Volumes/USB\ DISK/fenics.tar</code>. This might take some time since the FEniCS image needs to be copied from the USB stick.
+              <strong>Install the FEniCS Docker image.</strong> Copy <code>fenics.tar</code> and <code>fenicsproject</code> files to a folder without spaces (e.g. <code>C:\Docker\</code>), then navigate there and run <code>docker load -i fenics.tar</code>. This will take some time.
             </li>
             <li>
-              <strong>Install the FEniCS Docker script. </strong>Identify the path to the USB stick and copy the FEniCS Docker script onto your system by running something like <code>sudo cp /Volumes/USB\ DISK/fenicsproject /usr/local/bin</code>. If running on Windows, <code>cd</code> into some directory not containing spaces in the name before running the fenicsproject command (so stay <strong>out</strong> of My Documents).
+              <strong>Make new project</strong> Run the command <code>fenicsproject notebook unisa quay.io/dolfinadjoint/dev-dolfin-adjoint:latest</code> to make new project named unisa.
             </li>
           </ol>
         </section>
 
         <section id="ipython" style="font-size:90%;">
-          <h2>Docker, IPython and Jupiter</h2>
-          <p>Shareable documents, Interactive notebooks, Server may be online</p>
+          <section>
+            <h2>Docker, IPython and Jupiter</h2>
+            <p>Shareable documents, Interactive notebooks, Server may be online</p>
+            
+            <p style="text-align:left;">
+              To run the project you have made just run <code>fenicsproject start unisa</code>
+              (in the Docker Quickstart terminal on Windows). Now you should have the Jupyter
+              notebook enabled at <a href="http://192.168.99.100:3000/">192.168.99.100:3000</a>.
+              You can start e.g. a Python terminal there.
+            </p>
+            <p style="text-align:left;">
+              Docker <code>run</code> reference: <a href="https://docs.docker.com/engine/reference/run/">docs.docker.com/engine/reference/run/</a><br />
+              for enthusiastic people we provide more information lower <br /> (click down arrow button).
+            </p>
+            <p style="text-align:left;">
+              Check FEniCS version by:
+              <pre style="font-size: 55%;">
+  import dolfin
+  print dolfin.dolfin_version()</pre>
+            </p>
+          </section>
+          <section>
+            <h3>For Docker enthusiastics</h3>
+            <p>You do not have to use the fenicsproject script but make your own setup:</p>
             <pre style="font-size: 55%;">
 docker run --name notebook -w /home/fenics -v $(pwd):/home/fenics/shared
      -d -p 127.0.0.1:8888 quay.io/dolfinadjoint/dev-dolfin-adjoint
      'jupyter-notebook --ip=0.0.0.0'</pre>
-          <p></p>
-          <ul>
-            <li>reattach to a terminal: &nbsp;&nbsp;&nbsp; <code style="font-size: 90%;">docker attach <i>name</i></code></li>
-            <li>stop image: &nbsp;&nbsp;&nbsp; <code style="font-size: 90%;">docker stop <i>name</i></code></li>
-            <li>save image: &nbsp;&nbsp;&nbsp; <code style="font-size: 90%;">docker save -o <i>file</i> <i>name</i></code></li>
-            <li>load image: &nbsp;&nbsp;&nbsp; <code style="font-size: 90%;">docker load -i <i>file</i></code></li>
-          </ul>
-          <p>
-            <a href="https://docs.docker.com/engine/reference/run/">docs.docker.com/engine/reference/run/</a>
-          </p>
-          <p>
-            Check FEniCS version by:
-            <pre style="font-size: 55%;">
-import dolfin
-print dolfin.dolfin_version()</pre>
-          </p>
+            <p></p>
+            <ul>
+              <li>reattach to a terminal: &nbsp;&nbsp;&nbsp; <code style="font-size: 90%;">docker attach <i>name</i></code></li>
+              <li>stop image: &nbsp;&nbsp;&nbsp; <code style="font-size: 90%;">docker stop <i>name</i></code></li>
+              <li>save image: &nbsp;&nbsp;&nbsp; <code style="font-size: 90%;">docker save -o <i>file</i> <i>name</i></code></li>
+              <li>load image: &nbsp;&nbsp;&nbsp; <code style="font-size: 90%;">docker load -i <i>file</i></code></li>
+            </ul>
+          </section>
         </section>
 
         <section id="example1" style="font-size:90%;">
@@ -145,7 +148,7 @@ print dolfin.dolfin_version()</pre>
             <pre style="font-size: 55%;">
 f = Expression('-8 * pow(pi*(pow(x[0], 2) - 2*x[0]), 2) * cos(4*pi*x[1]) \
         + (pow(x[0], 4) - 4*pow(x[0], 3) - 8*pow(x[0], 2) + 24*x[0] - 8) \
-        * pow(sin(2*pi*x[1]), 2)')</pre>
+        * pow(sin(2*pi*x[1]), 2)', degree=2)</pre>
           <p><strong>Big time-saver</strong>$\rightarrow$<a href="ntbk/ex1.ipynb" target="_blank" download>IPython notebook for Example 1</a></p>
         </section>
 
